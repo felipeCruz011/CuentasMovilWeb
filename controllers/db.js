@@ -34,7 +34,7 @@ export function saveExpense(expense) {
     expenses.push(expense);
   
     localStorage.setItem('expenses', JSON.stringify(expenses));
-  
+
 }
 
 // Funcion para encontrar un gasto  segun el Index del Array de LocalStorage

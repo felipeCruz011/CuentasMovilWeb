@@ -38,6 +38,7 @@ class Modal {
     initDb(); // inicializa localStorage
 
     this.modalElement = document.createElement('div');
+
     // Agregar clase
     this.modalElement.classList.add('modal');
 
@@ -81,12 +82,6 @@ class Modal {
       createExpense(this); 
     }
 
-    // Funcion para pasar el modelo cuando se Edita un Gasto
-    const submitEditButton = document.getElementById('edit-btn');
-    if (submitEditButton) {
-      // Pasamos el Index y el modal 
-      updateListenerExpense(this.index, this);
-    }
 
 
   }

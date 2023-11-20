@@ -3,6 +3,7 @@ import { saveExpense } from './db.js';
 
 
 
+
 // Funcion para cargar los gatos en el Index.html
 export function loadExpenses() {
 
@@ -92,7 +93,7 @@ export function getExpenseForEditByIndex(index) {
     date.value = expense.date; 
 
     // Esperamos a la edicion para guardar los cambios
-    //updateListenerExpense(index);
+    updateListenerExpense(index);
 }
 
 // Evento Listener para guardar los cambios al Editar
@@ -114,6 +115,9 @@ export function updateListenerExpense(index, modal) {
         };
         console.log(expense);
         await saveExpenseById(expense, index);
-        modal.close;
+        // Cerramos la ventana modal
+        const modalContainer = document.getElementById('modalContainer');
+        modalContainer.remove();
+    
       });
 }
