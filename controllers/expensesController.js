@@ -1,19 +1,21 @@
-import { getExpenses, loadExpenseById, saveExpenseById } from './db.js';
-import { saveExpense } from './db.js';
+import {
+  deleteExpenseById,
+  getExpenses,
+  loadExpenseById,
+  saveExpenseById,
+} from "./db.js";
 
-
-
+import { saveExpense } from "./db.js";
 
 // Funcion para cargar los gatos en el Index.html
 export function loadExpenses() {
+  const expenses = getExpenses();
 
-    const expenses = getExpenses();
+  const expensesContainer = document.getElementById("expensesContainer");
 
-    const expensesContainer = document.getElementById('expensesContainer');
-  
-    let html = '';
-  
-    html += `
+  let html = "";
+
+  html += `
       <div id="expensesTable">
         <table class="table">
           <thead>
@@ -25,99 +27,111 @@ export function loadExpenses() {
           </thead>
           <tbody>
     `;
-  
-    expenses.forEach((expense , index) => {
-      html += `
+
+  expenses.forEach((expense, index) => {
+    html += `
             <tr id="expense-${index}"> 
               <td>${expense.name}</td>
               <td>$${expense.amount}</td>
               <td>${expense.date}</td>
               <td class="btn-edit-expense"><i class="fas fa-edit"></i></td>
+              <td class="btn-delete-expense"><i class="fas fa-trash"></i></td>
             </tr>
       `;
-    });
-  
-    html += `
+  });
+
+  html += `
           </tbody>
         </table>
       </div>
     `;
-  
-    expensesContainer.innerHTML = html; 
+
+  expensesContainer.innerHTML = html;
 }
 
 // Funcion para crear un Gasto nuevo aqui se recopila la informacion y se guarda la informacion
 //  en la base de datos llamando la funcion saveExpense del archivo db.js
 export function createExpense(modal) {
+  const submitButton = document.getElementById("submit-btn");
 
-    const submitButton = document.getElementById('submit-btn');
+  if (submitButton) {
+    submitButton.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-    if(submitButton) {
+      const name = document.getElementById("name").value;
+      const amount = document.getElementById("amount").value;
+      const date = document.getElementById("date").value;
 
-      submitButton.addEventListener('click', async (e) => {
+      const expense = {
+        name,
+        amount: parseFloat(amount),
+        date,
+      };
+      console.log(expense);
 
-        e.preventDefault(); 
-
-        const name = document.getElementById('name').value;
-        const amount = document.getElementById('amount').value;
-        const date = document.getElementById('date').value;
-      
-        const expense = {
-          name,
-          amount: parseFloat(amount), 
-          date
-        };
-        console.log(expense);
-      
-        await saveExpense(expense);
-        modal.close();
-      });
-  
-    }
+      await saveExpense(expense);
+      modal.close();
+    });
+  }
 }
-
-
 
 // Funcion para cargar la Informacion del Gasto segun el Index o Id del Gasto a la Vista Modal de Editar
 export function getExpenseForEditByIndex(index) {
-    //Obtenemos el gasto por id 
-    const expense = loadExpenseById(index);
+  //Obtenemos el gasto por id
+  const expense = loadExpenseById(index);
 
-    // Rellenar los datos en los inputs 
-    const name = document.getElementById('name');
-    const amount = document.getElementById('amount');
-    const date = document.getElementById('date');
+  // Rellenar los datos en los inputs
+  const name = document.getElementById("name");
+  const amount = document.getElementById("amount");
+  const date = document.getElementById("date");
 
-    name.value = expense.name;
-    amount.value = expense.amount;
-    date.value = expense.date; 
+  name.value = expense.name;
+  amount.value = expense.amount;
+  date.value = expense.date;
 
-    // Esperamos a la edicion para guardar los cambios
-    updateListenerExpense(index);
+  // Esperamos a la edicion para guardar los cambios
+  updateListenerExpense(index);
 }
 
-// Evento Listener para guardar los cambios al Editar
+// Funcion Event Listener para guardar los cambios al Editar
 export function updateListenerExpense(index, modal) {
-    const submitUpdateButton = document.getElementById('edit-btn');
+  const submitUpdateButton = document.getElementById("edit-btn");
 
-    submitUpdateButton.addEventListener('click', async (e) => {
-        
-        e.preventDefault(); 
+  submitUpdateButton.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-        const name = document.getElementById('name').value;
-        const amount = document.getElementById('amount').value;
-        const date = document.getElementById('date').value;
-      
-        const expense = {
-          name,
-          amount: parseFloat(amount), 
-          date
-        };
-        console.log(expense);
-        await saveExpenseById(expense, index);
-        // Cerramos la ventana modal
-        const modalContainer = document.getElementById('modalContainer');
-        modalContainer.remove();
-    
-      });
+    const name = document.getElementById("name").value;
+    const amount = document.getElementById("amount").value;
+    const date = document.getElementById("date").value;
+
+    const expense = {
+      name,
+      amount: parseFloat(amount),
+      date,
+    };
+    console.log(expense);
+    await saveExpenseById(expense, index);
+    // Cerramos la ventana modal
+    const modalContainer = document.getElementById("modalContainer");
+    modalContainer.remove();
+  });
+}
+
+// Funcion para esperar la confirmacion en la eliminacion de un gasto
+export function confirmExpenseDeletion(index) {
+  const btnEliminar = document.getElementById("btnButtonExpense");
+  const btnCancel = document.getElementById("btnCancel");
+
+  btnEliminar.addEventListener("click", async (e) => {
+    await deleteExpenseById(index);
+    // Cerramos la ventana modal
+    const modalContainer = document.getElementById("modalContainer");
+    modalContainer.remove();
+  });
+
+  btnCancel.addEventListener("click", (e) => {
+    // Cerramos la ventana modal
+    const modalContainer = document.getElementById("modalContainer");
+    modalContainer.remove();
+  });
 }
