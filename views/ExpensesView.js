@@ -57,15 +57,6 @@ class ExpensesView {
 
     this.expensesContainer.innerHTML = html;
 
-    // Funcion para guardar un gasto
-    function handleSubmit(e) {
-      e.preventDefault();
-
-      const name = form.querySelector("#expense-name").value;
-      const amount = form.querySelector("#expense-amount").value;
-
-      ExpensesModel.addExpense(name, amount);
-    }
   }
 }
 

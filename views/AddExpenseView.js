@@ -12,8 +12,16 @@ class AddExpenseView {
     });
   }
 
-  showModal(element) {
-    document.body.appendChild(element);
+  async showModal(element) {
+    await document.body.appendChild(element);
+
+    // Event Listener para cerrar cuando se da click por fuera del modal
+    const modalContent = document.getElementById('modalContent');
+    modalContent.addEventListener("click", (e) => {
+      if (e.target == modalContent) {
+        modalContent.parentElement.remove();
+      }
+    });
   }
 
   
